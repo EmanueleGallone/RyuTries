@@ -101,6 +101,21 @@ def _is_binary(string):
         is_binary = False
     return is_binary
 
+def Create(default_value = '0'):
+    _root = CompressedNode(default_value)
+
+    with open("db.txt", 'r') as f:
+        my_list = [line.rstrip('\n') for line in f]
+
+    for address in my_list:
+        addr, binary = address.split(',')
+        ip, mask = addr.split("\\")
+
+        _root.AddChild(ip, binary)
+
+    _root.Compress()
+    return _root
+
 
 def __create_random_ip_list(list_length=10000, for_creating_tries=True):
     # creating set of ips for creating/searching tries.
@@ -123,23 +138,9 @@ def __create_random_ip_list(list_length=10000, for_creating_tries=True):
 # DEBUG
 if __name__ == "__main__":
 
-    root = CompressedNode("0")
+    root = Create("0")
 
-    with open("db2.txt", 'r') as f:
-        my_list = [line.rstrip('\n') for line in f]
-
-    for address in my_list:
-        addr = address.split(',')[0]
-        binary = address.split(',')[1]
-        ip = addr.split("\\")[0]
-        mask = int(addr.split("\\")[1])
-        # a = convert_in_bin(ip)[:mask]
-
-        root.AddChild(ip, binary)
-
-    root.Compress()
-
-    with open('tosearch2.txt', 'r') as t:
+    with open('tosearch.txt', 'r') as t:
         my_list = [line.rstrip('\n') for line in t]
 
 

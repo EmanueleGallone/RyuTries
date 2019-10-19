@@ -1,95 +1,105 @@
 ### Tries data structures made for IP lookups in Ryu Framework
 
-### OLD
-
 ## Getting started
 ### Binary Trie
 
 #### Usage:
 ```
-import BinaryTrie
+import BinaryNode
 ```
 
-use custom prefix table (only dictionary should be used):
-- NB: the custom table must have the binary representation of a prefix ip address
-```
-custom_table = {"1100001":"192.168.0.1", "110000": "192.168.0.10"}
-BinaryTrie.TABLE = custom_table
-```
+to use a custom prefix table:
+- just edit the db.txt file. Be careful to respect the file format (ip\mask, ip_in_binary)
+
 
 create the Binary Trie:
 ```
-trie = BinaryTrie.TrieNode('', 'Default_Value')
-trie = BinaryTrie.create()
+root = BinaryNode.Create('Default value')
 ```
+where the 'Default value' is the default prefix that is returned whenever the lookup fails (e.g. '0')
 
 find longest prefix match:
 ```
-BinaryTrie.find_longest_prefix(trie, '001')
+root.Lookup(ip_bin)
 ```
+where ip_bin is the binary representation of the ip. 
+> e.g. ip to lookup =189.xxx.xxx.xxx\6 -> 101111 :
+```
+result = root.Lookup("001101")
+```
+
+#### Alternative:
+You can also build manually the trie (the 'db.txt' file will be ignored):
+```
+import BinaryTrie
+
+root = BinaryNode.BinaryNode('0')
+root.AddChild("189.xxx.xxx.xxx", '101111')
+```
+
 #
 
 ### Multibit Trie
 #### Usage:
 ```
-import MultibitTrie
+import MultibitNode
 ```
-You can change the TABLE dictionary using custom prefixes:
-```
-custom_table = {"P1":"", "P2":"001, "P3":"010"}
-MultibitTrie.TABLE = custom_table
-```
-NB: make sure you have a prefix as default, in my case "P1".
-the default value can be overridden when creating the trie (see section 'Create the Trie' below)
 
-You can also change the Stride of the Trie:
+to use a custom prefix table:
+- just edit the db.txt file. Be careful to respect the file format (ip\mask, ip_in_binary)
+
+
+> EXPERIMENTAL: You can also change the Stride of the Trie:
 ```
 MultibitTrie.STRIDE = 2
 ```
 
-Create the Trie:(the '*' is the default value that is returned in case no other prefix is found)
+Create the Trie:
 ```
-root = MultibitTrie.TrieNode('*')
-MultibitTrie.initialize(root)
+root = MultibitNode.Create()
 ```
 
 find longest prefix match:
 ```
-MultibitTrie.longest_prefix(root, '001')
+MultibitNode.Lookup(binary_address, 'Default value')
 ```
-will return:
-```
-('001','P2')
-```
+where:
+ - binary_address is the binary representation of an IP address 
+ - 'Default value' is the value the is returned in case Lookup fails (e.g. '0'):
 #
 
 ### Compressed Trie
-Notes: 
-- this trie returns 0 when a prefix is not found
-- use 'find_longest_prefix' method to find a prefix. It returns a node object
-- if you need the value of the prefix just use trie.find_longest_prefix(trie).label
+
 #### Usage:
 ```
-import CompressedTrie
+import CompressedNode
 ```
-change the TABLE for constructing the trie, using custom prefixes:
-```
-custom_table = {"1100001"}
-CompressedTrie.TABLE = custom_table
-```
+to use a custom prefix table:
+- just edit the db.txt file. Be careful to respect the file format (ip\mask, ip_in_binary)
 
 Create the Trie:
 ```
-root = CompressedTrie.create()
+root = CompressedNode.Create("Default_value")
 ```
+where *Default_value* is the value that is returned whenever the Lookup fails.
 
 Find the longest prefix:
 ```
-prefix_node = CompressedTrie.find_longest_prefix(root, '192.168.0.1')
+result = CompressedNode.Lookup("0101101")
 ```
 
-the attribute 'label' is used to show the prefix name:
+#### Alternative:
+You can also build manually the trie (the 'db.txt' file will be ignored):
 ```
-print(prefix_node.label) -> P1
+import CompressedNode
+
+root = CompressedNode.CompressedNode('0')
+root.AddChild('189.xxx.xxx.xxx', '101111')
+root.AddChild('93.91.xxx.xxx', '0101110101011011')  # that is 93.91.xxx.xxx\16
+.
+.
+
+root.Compress()
 ```
 
+#

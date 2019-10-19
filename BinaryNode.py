@@ -48,6 +48,20 @@ class BinaryNode(object):
             else:
                 return backtrack
 
+def Create(default_value='0'):
+    _root = BinaryNode(default_value)
+
+    with open("db.txt", 'r') as f:
+        my_list = [line.rstrip('\n') for line in f]
+
+    for address in my_list:
+        addr, binary_address = address.split(',')
+        ip, mask = addr.split("\\")
+
+        _root.AddChild(ip, binary_address)
+
+    return _root
+
 
 def convert_in_bin(address):
     if address.find('\\') != -1:
@@ -70,21 +84,9 @@ def _is_binary(string):
 # DEBUG
 if __name__ == "__main__":
 
-    root = BinaryNode("0")
+    root = Create("0")
 
-    with open("db2.txt", 'r') as f:
-        my_list = [line.rstrip('\n') for line in f]
-
-    for address in my_list:
-        addr = address.split(',')[0]
-        binary_address = address.split(',')[1]
-        ip = addr.split("\\")[0]
-        mask = int(addr.split("\\")[1])
-        addr = convert_in_bin(ip)[:mask]
-
-        root.AddChild(ip, addr)
-
-    with open('tosearch2.txt', 'r') as t:
+    with open('tosearch.txt', 'r') as t:
         my_list = [line.rstrip('\n') for line in t]
 
     times = []
