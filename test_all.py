@@ -4,19 +4,8 @@ import MultibitNode
 import timeit
 
 binary_root = BinaryNode.Create('0')
-compressed_root = CompressedNode.CompressedNode("0")
-multibit_root = MultibitNode.MultibitNode()
-
-with open("db.txt", 'r') as f:  # reading for creating
-    my_list = [line.rstrip('\n') for line in f]
-
-for entry in my_list:
-    addr, binary_address = entry.split(",")
-    binary_root.AddChild(addr, binary_address)
-    compressed_root.AddChild(addr, binary_address)
-    multibit_root.AddChild(addr, binary_address)
-
-compressed_root.Compress()
+compressed_root = CompressedNode.Create("0")
+multibit_root = MultibitNode.Create()
 
 # starting performing lookups
 with open('tosearch.txt', 'r') as t:
