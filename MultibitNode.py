@@ -32,7 +32,7 @@ class MultibitNode(object):
             if first not in self.children:
                 self.children[first] = ("", MultibitNode())
             # Otherwise keep the existing prefix and just create a child node
-            else:
+            elif self.children[first][1] is None:
                 self.children[first] = (self.children[first][0], MultibitNode())
 
             self.children[first][1].AddChild(prefix, path[STRIDE:])
