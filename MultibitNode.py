@@ -67,6 +67,7 @@ def GetCombinations(length):
     char_set = [0, 1]
     return [''.join(map(str, i)) for i in itertools.product(char_set, repeat=length)]
 
+
 def Create():
     _root = MultibitNode()
     with open("db.txt", 'r') as f:  # reading for creating
@@ -77,6 +78,15 @@ def Create():
         _root.AddChild(addr, binary_address)
 
     return _root
+
+
+def convert_in_bin(address):
+    if address.find('\\') != -1:
+        ip = address.split("\\")[0]
+        mask = int(address.split("\\")[1])
+        return ''.join([bin(int(x) + 256)[3:] for x in ip.split('.')])[:mask]
+    else:
+        return ''.join([bin(int(x) + 256)[3:] for x in address.split('.')])
 
 
 if __name__ == "__main__":
