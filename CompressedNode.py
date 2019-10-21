@@ -1,4 +1,3 @@
-import ipaddress
 import timeit
 
 class CompressedNode(object):
@@ -32,7 +31,8 @@ class CompressedNode(object):
                 self.Right.AddChild(prefix, path[1:])
 
     def Lookup(self, address, backtrack=""):
-
+        # this lookup looks exactly the same as the one on BinaryNode with the only exception that we have
+        # to take account of the skips
         if self.NextHop != "":
             backtrack = self.NextHop
 
@@ -84,7 +84,10 @@ class CompressedNode(object):
             else:
                 return self.Right.Compress(segment + '1')
 
+
 def convert_in_bin(address):
+    # simple method to convert an IP address in its binary representation
+
     if address.find('\\') != -1:
         ip = address.split("\\")[0]
         mask = int(address.split("\\")[1])
@@ -127,7 +130,7 @@ def __create_random_ip_list(list_length=10000, for_creating_tries=True):
                 ip = '{}.{}.{}.{}'.format(*__import__('random').sample(range(0, 255), 4))
                 mask = str(random.choice([8, 12, 16, 24, 28]))
                 f.write(ip + "\\" + mask + "," + convert_in_bin(ip)[:int(mask)] + "\n")
-    else: # else it means that it is for searching
+    else:  # else it means that it is for searching
         with open('to_search.txt', 'w') as f:
             for i in range(1, list_length):
                 ip = '{}.{}.{}.{}'.format(*__import__('random').sample(range(0, 255), 4))
@@ -147,9 +150,6 @@ if __name__ == "__main__":
     times = []
     for entry in my_list:
         binary_address = entry.split(',')[1]
-        # ip = entry.split("\\")[0]
-        # mask = int(entry.split("\\")[1])
-        # addr = convert_in_bin(ip)[:mask]
 
         start = timeit.default_timer()
         root.Lookup(binary_address)

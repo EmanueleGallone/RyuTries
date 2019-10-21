@@ -69,8 +69,9 @@ def GetCombinations(length):
 
 
 def Create():
+    # helper method to rapidly create the trie reading the db.txt
     _root = MultibitNode()
-    with open("db.txt", 'r') as f:  # reading for creating
+    with open("db.txt", 'r') as f:  # reading db for creating the trie
         my_list = [line.rstrip('\n') for line in f]
 
     for entry in my_list:
@@ -81,6 +82,7 @@ def Create():
 
 
 def convert_in_bin(address):
+    # simple method to convert an IP address in its binary representation
     if address.find('\\') != -1:
         ip = address.split("\\")[0]
         mask = int(address.split("\\")[1])
@@ -88,7 +90,7 @@ def convert_in_bin(address):
     else:
         return ''.join([bin(int(x) + 256)[3:] for x in address.split('.')])
 
-
+# DEBUG
 if __name__ == "__main__":
 
     root = Create()

@@ -29,18 +29,18 @@ class BinaryNode(object):
 
                 self.Right.AddChild(prefix, path[1:])
 
-
     def Lookup(self, address, backtrack=""):
-        if self.NextHop != "":
+
+        if self.NextHop != "":  # saving the last hop visited
             backtrack = self.NextHop
 
-        if address == "" or (self.Left is None and self.Right is None):
+        if address == "" or (self.Left is None and self.Right is None):  # if we are on a leaf node return the last prefix
             return backtrack
 
-        if address.startswith("0"):
-            if self.Left is not None:
+        if address.startswith("0"):  # for each hop we check whether go to the left or right branch
+            if self.Left is not None:  # if there's still a child, look deeper in the trie
                 return self.Left.Lookup(address[1:], backtrack)
-            else:
+            else:  # otherwise return the last valid prefix
                 return backtrack
         else:
             if self.Right is not None:
@@ -48,7 +48,10 @@ class BinaryNode(object):
             else:
                 return backtrack
 
+
 def Create(default_value='0'):
+    # helper method to rapidly create the trie reading the db.txt
+
     _root = BinaryNode(default_value)
 
     with open("db.txt", 'r') as f:
@@ -64,6 +67,7 @@ def Create(default_value='0'):
 
 
 def convert_in_bin(address):
+    # simple method to convert an IP address in its binary representation
     if address.find('\\') != -1:
         ip = address.split("\\")[0]
         mask = int(address.split("\\")[1])
