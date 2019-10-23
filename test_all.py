@@ -47,30 +47,36 @@ for entry in my_list:
 print("multibit trie (avg per lookup): " + str(sum(times)/len(times)) + "ms")
 print("multibit trie (sum of all times): " + str(sum(times)) + "ms")
 
-# # custom ips to search
-# # CODE FROM RYU
-#
-# switch = {}
-# switch["195.0.0.254"] = ["195.0.0.254", "8", "1"]
-# switch["128.128.0.254"] = ["128.128.0.254", "12", "2"]
-# switch["154.128.0.254"] = ["154.128.0.254", "16", "3"]
-# switch["197.160.0.254"] = ["197.160.0.254", "24", "4"]
-# switch["192.168.0.254"] = ["192.168.0.254", "24", "5"]
-# switch["192.169.0.254"] = ["192.169.0.254", "24", "6"]
-# switch["192.170.0.254"] = ["192.170.0.254", "24", "7"]
-#
-# _root = MultibitNode.MultibitNode()
-#
-# tuples = []
-# for key, value in switch.iteritems():  # creating list of tuples for ordering
-#     ip = value[0]
-#     mask = int(value[1])
-#     tuples.append((ip, mask))
-#
-# for entry in sorted(tuples, key=lambda x: x[1]):
-#     ip, mask = entry
-#     binary_address = MultibitNode.convert_in_bin(ip)[:mask]
-#     _root.AddChild(ip, binary_address)
-#
-# binary_address = MultibitNode.convert_in_bin("195.0.0.1")
-# print (_root.Lookup(binary_address, "0"))
+# custom ips to search
+# CODE FROM RYU
+
+switch = {}
+switch["195.0.0.254"] = ["195.0.0.254", "8", "1"]
+switch["128.128.0.254"] = ["128.128.0.254", "12", "2"]
+switch["154.128.0.254"] = ["154.128.0.254", "16", "3"]
+switch["197.160.0.254"] = ["197.160.0.254", "24", "4"]
+switch["192.168.0.254"] = ["192.168.0.254", "24", "5"]
+switch["192.169.0.254"] = ["192.169.0.254", "24", "6"]
+switch["192.170.0.254"] = ["192.170.0.254", "24", "7"]
+
+_root_multibit = MultibitNode.MultibitNode()
+_root_binary = BinaryNode.BinaryNode("0")
+_root_compressed = CompressedNode.CompressedNode("0")
+
+tuples = []
+for key, value in switch.iteritems():  # creating list of tuples for ordering
+    ip = value[0]
+    mask = int(value[1])
+    tuples.append((ip, mask))
+
+for entry in sorted(tuples, key=lambda x: x[1]):
+    ip, mask = entry
+    binary_address = MultibitNode.convert_in_bin(ip)[:mask]
+    _root_multibit.AddChild(ip, binary_address)
+    _root_binary.AddChild(ip, binary_address)
+    _root_compressed.AddChild(ip, binary_address)
+
+binary_address = MultibitNode.convert_in_bin("195.0.128.1")
+print (_root_multibit.LookupNonRecursive(binary_address, "0"))
+print (_root_binary.LookupNonRecursive(binary_address, "0"))
+print (_root_compressed.LookupNonRecursive(binary_address, "0"))

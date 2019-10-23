@@ -48,6 +48,33 @@ class BinaryNode(object):
             else:
                 return backtrack
 
+    def LookupNonRecursive(self, address, rootPrefix = "0"):
+        backtrack = ""
+        partialAddress =address
+        node = self
+
+        while (node is not None):
+            if node.NextHop != "":
+                backtrack = node.NextHop
+
+            if partialAddress == "" or (node.Left is None and node.Right is None):
+                return backtrack
+
+            if partialAddress.startswith("0"):
+                if node.Left is not None:
+                    partialAddress = partialAddress[1:]
+                    node = node.Left
+                else:
+                    return backtrack
+            else:
+                if node.Right is not None:
+                    partialAddress = partialAddress[1:]
+                    node = node.Right
+                else:
+                    return backtrack
+
+        return backtrack
+
 
 def Create(default_value='0'):
     # helper method to rapidly create the trie reading the db.txt

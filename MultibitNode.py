@@ -26,7 +26,7 @@ class MultibitNode(object):
 
         else:  # if it's longer than the stride
             
-            first = path[:STRIDE] # Take only the first STRIDE characters
+            first = path[:STRIDE]  # Take only the first STRIDE characters
             
             # If we don't have this value in the dictionary yet, make a new node with no prefix
             if first not in self.children:
@@ -61,6 +61,30 @@ class MultibitNode(object):
             else:
                 return child[1].Lookup(address[STRIDE:], child[0])
 
+    def LookupNonRecursive(self, address, rootPrefix):
+        backtrack = rootPrefix
+        partialAddress = address
+        node = self
+
+        while node is not None:
+            if len(partialAddress) < STRIDE:
+                return backtrack
+
+            first = partialAddress[:STRIDE]
+
+            if len(partialAddress) < STRIDE or first not in node.children:
+                return backtrack
+
+            child = node.children[first]
+            node = node.children[first][1]  # relocating pointer
+
+            if len(partialAddress) == STRIDE or child[1] is None:
+                return child[0]
+            else:
+                partialAddress = partialAddress[STRIDE:]
+                if child[0] != "":
+                    backtrack = child[0]
+                    node = child[1]
 
 def GetCombinations(length):
     # creating the combinations of the remaining bits
@@ -112,7 +136,7 @@ if __name__ == "__main__":
        addr, binary_address = entry.split(",")
 
        start = timeit.default_timer()  # starting timing
-       root.Lookup(binary_address, "0")
+       root.LookupNonRecursive(binary_address, "0")
        end = timeit.default_timer() - start
 
        times.append(end*1000)

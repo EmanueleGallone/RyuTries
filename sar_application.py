@@ -177,7 +177,7 @@ class SimpleSwitch13(app_manager.RyuApp):
     def order_switch(self):
         '''
         helper method to build a sorted list of tuples
-        :return: sorted list of tuples (ip, mask) by mask length
+        :return: list of tuples (ip, mask) sorted by mask length
         '''
         tuples = []
         for key, value in self.switch.iteritems():

@@ -50,6 +50,33 @@ class CompressedNode(object):
             else:
                 return backtrack
 
+    def LookupNonRecursive(self, address, rootPrefix="0"):
+        backtrack = ""
+        partialAddress = address
+        node = self
+
+        while node is not None:
+            if node.NextHop != "":
+                backtrack = node.NextHop
+
+            if partialAddress == "" or (node.Left is None and node.Right is None):
+                return backtrack
+
+            if partialAddress.startswith("0"):
+                if node.Left is not None and len(partialAddress) >= node.Left.Skip +1 and (node.Left.Segment == "" or partialAddress.startswith("0" + node.Left.Segment)):
+                    partialAddress = partialAddress[node.Left.Skip+1:]
+                    node = node.Left
+                else:
+                    return backtrack
+            else:
+                if node.Right is not None and len(partialAddress) >= node.Right.Skip + 1 and (node.Right.Segment == "" or partialAddress.startswith("0" + node.Right.Segment)):
+                    partialAddress = partialAddress[node.Right.Skip+1:]
+                    node = node.Right
+                else:
+                    return backtrack
+
+        return backtrack
+
     def Compress(self, segment=""):
 
         # if I have no children, return myself
